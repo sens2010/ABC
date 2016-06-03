@@ -29,15 +29,8 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 	}
 	
 	@Override
-	Value findOne(T key)
-	{
-		return null;
-	}
-	
-	@Override
 	Node<T> addNode(T key, Value value)
 	{
-		System.out.println("root size2:"+getKeyList().size());
 		int pos = findNode(key);
 		Node<T> newnode = this.getIndexList().get(pos).addNode(key, value);
 		if (newnode != null)
@@ -62,14 +55,21 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 			
 			InnerNode<T> inner = new InnerNode<T>();
 			
-			inner.setKeyList(keys.subList((keys.size() + 1) / 2 + 1,
-					keys.size() - 1));
-			inner.setIndexList(indexes.subList((keys.size() + 1) / 2 + 1,
-					keys.size()));
+			List<T> subkeys = keys.subList((keys.size() + 1) / 2 + 1,keys.size());
+			List<Node<T>> subindexes = indexes.subList((keys.size() + 1) / 2 + 1,indexes.size());
+			for(T k:subkeys)
+			{
+				inner.getKeyList().add(k);
+			}
+			for(Node<T> si:subindexes)
+			{
+				inner.getIndexList().add(si);
+			}
+			
 			
 			inner.setAcientKey(keys.get((keys.size() + 1) / 2));
-			keys.subList((keys.size() + 1) / 2 + 1,
-					keys.size() - 1).clear();
+			keys.subList((keys.size() + 1) / 2,
+					keys.size()).clear();
 			indexes.subList((keys.size() + 1) / 2 + 1,
 					keys.size()).clear();
 			
@@ -77,18 +77,144 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 		}
 	}
 	
-	int findNode(T key)
+	public Node<T> removeNode(T key)
 	{
-		System.out.println("root size3:"+getKeyList().size());
-		List<T> keylist = this.getKeyList();
-		int i = 0;
-		System.out.println(keylist.get(i));
-		while (i<keylist.size()&&keylist.get(i).compareTo(key) < 0)
+		int pos = findNode(key);
+		Node<T> newnode = this.getIndexList().get(pos).removeNode(key);
+		if(newnode==null)
 		{
-			i++;
+			return null;
+		}
+		else
+		{
+			if(newnode.getKeyList().size()==0)
+			{
+				return newnode;
+			}
+			else
+			{
+				if(pos==0)
+				{
+					Node<T> right = this.getIndexList().get(pos+1);
+					if(right.getKeyList().size()>(Node.getNodeBottom()+Node.getBorrowCount()))
+					{
+						T flag = newnode.borrowNode(right, Node.getBorrowCount());
+						this.getKeyList().set(pos,flag);
+					}
+					else
+					{
+						newnode.borrowNode(right, right.getKeyList().size());
+						this.getKeyList().remove(0);
+						this.getKeyList().remove(1);
+					}
+				}
+				else if(pos<=(this.getKeyList().size()-1))
+				{
+					Node<T> right = this.getIndexList().get(pos+1);
+					Node<T> left = this.getIndexList().get(pos-1);
+					if(right.getKeyList().size()>(Node.getNodeBottom()+Node.getBorrowCount()))
+					{
+						T flag = newnode.borrowNode(right, Node.getBorrowCount());
+						this.getKeyList().set(pos,flag);
+					}
+					else if(left.getKeyList().size()>(Node.getNodeBottom()+Node.getBorrowCount()))
+					{
+						T flag = left.borrowNode(newnode, Node.getBorrowCount()*-1);
+						this.getKeyList().set(pos-1,flag);
+					}
+					else
+					{
+						newnode.borrowNode(right, right.getKeyList().size());
+						this.getKeyList().remove(pos);
+						this.getKeyList().remove(pos+1);
+					}
+				}
+				else
+				{
+					Node<T> left = this.getIndexList().get(pos-1);
+					if(left.getKeyList().size()>(Node.getNodeBottom()+Node.getBorrowCount()))
+					{
+						T flag = left.borrowNode(newnode, Node.getBorrowCount()*-1);
+						this.getKeyList().set(pos-1,flag);
+					}
+					else
+					{
+						left.borrowNode(newnode, newnode.getKeyList().size());
+						this.getKeyList().remove(pos);
+						this.getKeyList().remove(pos+1);
+					}
+				}
+				if(this.getKeyList().size()>Node.getNodeBottom())
+				{
+					return null;
+				}
+				else
+				{
+					return this;
+				}
+			}
+		}
+	}
+	
+	public Value findOne(T key)
+	{
+		int pos = findNode(key);
+		return this.getIndexList().get(pos).findOne(key);
+	}
+	public List<Value> findAll(T key)
+	{
+		int pos = findNode(key);
+		return this.getIndexList().get(pos).findAll(key);
+	}
+	
+	public boolean updateOne(T key,Value value)
+	{
+		int pos = findNode(key);
+		return this.getIndexList().get(pos).updateOne(key,value);
+	}
+	public boolean updateAll(T key,Value value)
+	{
+		int pos = findNode(key);
+		return this.getIndexList().get(pos).updateAll(key,value);
+	}
+	
+	
+	public T borrowNode(Node<T> right, int number)
+	{
+		if(number>0)
+		{
+			for(int i=0;i<number;i++)
+			{
+				this.getKeyList().add(right.getKeyList().get(i));
+				((InnerNode<T>)this).getIndexList().add(((InnerNode<T>)right).getIndexList().get(i));
+			}
+			right.getKeyList().subList(0, number).clear();
+			((InnerNode<T>)right).getIndexList().subList(0, number).clear();
+			return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+		}
+		else if(number<0)
+		{
+			for(int i=0;i<number;i++)
+			{
+				right.getKeyList().add(this.getKeyList().get(i));
+				((InnerNode<T>)right).getIndexList().add(((InnerNode<T>)this).getIndexList().get(i));
+			}
+			this.getKeyList().subList(0, number).clear();
+			((InnerNode<T>)this).getIndexList().subList(0, number).clear();
+			return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+		}
+		else
+		{
+			return null;
 		}
 		
-			return i;
-		
 	}
+	
+
+	
+	public void visitAll()
+	{
+		this.getIndexList().get(0).visitAll();
+	}
+	
 }

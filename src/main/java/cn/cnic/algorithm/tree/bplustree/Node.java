@@ -8,23 +8,33 @@ public abstract class Node<T extends Comparable<T>>
 {
 	private static int NODESIZE = 10;
 	private static int NODEBOTTOM = 5;
+	private static int BORROWCOUNT=1;
 	public static int getNodeSize()
 	{
 		return NODESIZE;
 	}
 	
-	public static int setNodeSize(int nodesize)
+	public static void setNodeSize(int nodesize)
 	{
-		return NODESIZE = nodesize;
+		NODESIZE = nodesize;
 	}
 	public static int getNodeBottom()
 	{
 		return NODEBOTTOM;
 	}
 	
-	public static int setNodeBottom(int nodebottom)
+	public static void setNodeBottom(int nodebottom)
 	{
-		return NODEBOTTOM = nodebottom;
+		NODEBOTTOM = nodebottom;
+	}
+	
+	public static void setBorrowCount(int borrowcount)
+	{
+		BORROWCOUNT = borrowcount;
+	}
+	public static int getBorrowCount()
+	{
+		return BORROWCOUNT;
 	}
 	
 	private T ancientKey;
@@ -52,11 +62,16 @@ public abstract class Node<T extends Comparable<T>>
 		this.keylist.addAll(keylist);
 	}
 	
-
-	
 	Value findOne(T search){return null;};
 	
-	ResultSet findAll(T search)
+	//left node will borrow or lend some node the right. 
+	//if number >0 is lend, left<-right;
+	//otherwise, left->right, and the number will match the count
+	public abstract T borrowNode(Node<T> right, int number);
+	
+	
+	
+	List<Value> findAll(T search)
 	{
 		return null;
 	}
@@ -83,13 +98,13 @@ public abstract class Node<T extends Comparable<T>>
 			}
 			keylist.add(key);
 		}
-		System.out.println("插入位置：" + result);
+		/*System.out.println("插入位置：" + result);
 		System.out.print("插入结果");
 		for (T i : keylist)
 		{
 			System.out.print(i + "    ");
 		}
-		System.out.println();
+		System.out.println();*/
 		return result;
 	}
 	
@@ -116,28 +131,54 @@ public abstract class Node<T extends Comparable<T>>
 		}
 	}
 	
+	public int search(int start, int end, T key)
+	{
+		int mid = (start + end + 1) / 2;
+		if (this.getKeyList().get(mid).compareTo(key) == 0 || start == end)
+		{
+			if (this.getKeyList().get(mid).compareTo(key) != 0)
+			{
+				return -1;
+			} else
+			{
+				return mid;
+			}
+		} else if (this.getKeyList().get(mid).compareTo(key) > 0)
+		{
+			return search(start, mid - 1, key);
+		} else
+		{
+			return search(mid + 1, end, key);
+		}
+	}
+	
+	public abstract void visitAll();
 	
 	
+	public abstract Node<T> removeNode(T key);
 	
+	boolean updateOne(T node, Value value)
+	{
+		return null != null;
+	}
 	
-	
-	boolean deleteNode(T node)
+	boolean updateAll(T node, Value value)
 	{
 		return null != null;
 		
 	}
 	
-	boolean updateNode(T node)
+	int findNode(T key)
 	{
-		return null != null;
-	}
-	
-	boolean updateNode(T node, Value value)
-	{
-		return null != null;
+		List<T> keylist = this.getKeyList();
+		int i = 0;
+		while (i<keylist.size()&&keylist.get(i).compareTo(key) < 0)
+		{
+			i++;
+		}
+		return i;
 		
 	}
-	
 	/**
 	 * @param args
 	 */

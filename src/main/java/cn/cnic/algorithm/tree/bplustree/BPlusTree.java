@@ -1,4 +1,6 @@
 package cn.cnic.algorithm.tree.bplustree;
+import java.util.List;
+
 import cn.cnic.algorithm.common.StringFunnel;
 import com.google.common.hash.BloomFilter;
 public class BPlusTree<T extends Comparable<T>> {
@@ -6,7 +8,14 @@ public class BPlusTree<T extends Comparable<T>> {
 	
 	Node<T> root;
 	
-	
+	public Node<T> getRoot()
+	{
+		return this.root;
+	}
+	public void setRoot(Node<T> root)
+	{
+		this.root = root;
+	}
 	public BPlusTree()
 	{
 		root =  new Leaf<T>();
@@ -19,26 +28,64 @@ public class BPlusTree<T extends Comparable<T>> {
 	
 	public void addNode(T key, Value value)
 	{
-		System.out.println("root size1:"+root.getKeyList().size());
 		Node<T> newnode= root.addNode(key, value);
-		
 		if(newnode!=null)
 		{
 			InnerNode<T> temp = new InnerNode<T>();
 			temp.getKeyList().add(newnode.getAcientKey());
 			temp.getIndexList().add(root);
-			System.out.println("root size:"+root.getKeyList().size());
 			temp.getIndexList().add(newnode);
-			System.out.println("new size:"+newnode.getKeyList().size());
-			System.out.println("temp size:"+temp.getKeyList().size());
-			root = temp;
-			System.out.println("root size:"+root.getKeyList().size());
-			System.out.println("root size4:"+root.getKeyList().get(0));
-			System.out.println("temp size4:"+temp.getKeyList().get(0));
-			
+			root = temp;		
 		}
 	}
 	
+	public boolean removeNode(T key)
+	{
+		Node<T> newnode= root.removeNode(key);
+		if(newnode==null)
+		{
+			return true;
+		}
+		else if(newnode.getKeyList().size()==0)
+		{
+			return false;
+		}
+		else
+		{
+			if(newnode instanceof InnerNode&& newnode.getKeyList().size()==1)
+			{
+				Node<T> left = ((InnerNode<T>)newnode).getIndexList().get(0);
+				Node<T> right = ((InnerNode<T>)newnode).getIndexList().get(1);
+				left.borrowNode(right, right.getKeyList().size());
+				root = left;
+			}
+			return true;
+		}
+	}
+	
+	public Value find(T key)
+	{
+		return root.findOne(key);
+	}
+	public List<Value> findAll(T key)
+	{
+		return root.findAll(key);
+	}
+	
+	public boolean update(T key, Value value)
+	{
+		return root.updateOne(key, value);
+	}
+	
+	public boolean updateAll(T key, Value value)
+	{
+		return root.updateAll(key, value);
+	}
+	
+	public void visitAll()
+	{
+		this.getRoot().visitAll();
+	}
 	/**
 	 * @param args
 	 */

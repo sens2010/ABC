@@ -1,7 +1,6 @@
 package cn.cnic.algorithm.tree.bplustree;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.google.common.collect.Lists;
 
@@ -10,6 +9,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	
 	private List<Value> datalist = Lists.newLinkedList();
 	private Leaf<T> nextNode = null;
+	private Leaf<T> frontNode = null;
 	public List<Value> getDataList()
 	{
 		return this.datalist;
@@ -29,6 +29,16 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	public void setNext(Leaf<T> next)
 	{
 		this.nextNode = next;
+	}
+	
+	public Leaf<T> front()
+	{
+		return this.frontNode;
+	}
+	
+	public void setFront(Leaf<T> front)
+	{
+		this.frontNode  = front;
 	}
 	
 	Node<T> addNode(T key, Value value)
@@ -52,21 +62,168 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 			
 			Leaf<T> leaf = new Leaf<T>();
 			
-			for(int i=(keys.size()+1)/2;i<=keys.size()-1;i++)
+			List<T> subkeys = keys.subList((keys.size()+1)/2, keys.size());
+			List<Value> subvalues = values.subList((keys.size()+1)/2, keys.size());
+			
+			for(T k:subkeys)
 			{
-				leaf.getKeyList().add(keys.get(i));
-				leaf.getDataList().add(values.get(i));
+				leaf.getKeyList().add(k);
 			}
-			keys.subList((keys.size()+1)/2, keys.size()-1).clear();
-			values.subList((keys.size()+1)/2, keys.size()-1).clear();
+			for(Value v:subvalues)
+			{
+				leaf.getDataList().add(v);
+			}
+			subkeys.clear();
+			subvalues.clear();
 			
 			leaf.setNext(this.next());
+			leaf.setFront(this);
 			this.setNext(leaf);
 			leaf.setAcientKey(leaf.getKeyList().get(0));
-			System.out.println("split! ak："+this.getAcientKey());
-			System.out.println("split!");
 			return leaf;
 		}
+	}
+	
+	@Override
+	public Node<T> removeNode(T key)
+	{
+		int index = search(key);
+		if(index==-1)
+		{
+			return new Leaf<T>();
+		}
+		else
+		{
+			this.getKeyList().remove(index);
+			this.getDataList().remove(index);
+			if(this.getKeyList().size()>Node.getNodeBottom())
+			{
+				return null;
+			}
+			else
+			{
+				return this;
+			}
+		}
+	}
+	
+	public int search(T key)
+	{
+		return search(0,this.getKeyList().size()-1,key);
+	}
+	
+
+	public T borrowNode(Node<T> right, int number)
+	{
+		if(number>0)
+		{
+			for(int i=0;i<number;i++)
+			{
+				this.getKeyList().add(right.getKeyList().get(i));
+				((Leaf<T>)this).getDataList().add(((Leaf<T>)right).getDataList().get(i));
+			}
+			right.getKeyList().subList(0, number).clear();
+			((Leaf<T>)right).getDataList().subList(0, number).clear();
+			return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+		}
+		else if(number<0)
+		{
+			for(int i=0;i<number;i++)
+			{
+				right.getKeyList().add(this.getKeyList().get(i));
+				((Leaf<T>)right).getDataList().add(((Leaf<T>)this).getDataList().get(i));
+			}
+			this.getKeyList().subList(0, number).clear();
+			((Leaf<T>)this).getDataList().subList(0, number).clear();
+			 return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+		}
+		else
+		{
+			return null;
+		}
+		
+	}
+	
+	public Value findOne(T key)
+	{
+		int pos = findNode(key);
+		if(this.getKeyList().get(pos).compareTo(key)!=0)
+			return null;
+		else
+			return this.getDataList().get(pos);
+	}
+	
+	public List<Value> findAll(T key)
+	{
+		int pos = findNode(key);
+		if(this.getKeyList().get(pos).compareTo(key)!=0)
+			return null;
+		else
+		{
+			List<Value> results = Lists.newLinkedList();
+			do
+			{
+				while(pos<this.getDataList().size()&&this.getKeyList().get(pos).compareTo(key)==0)
+				{
+					results.add(this.getDataList().get(pos));
+					pos++;
+				}
+				if(pos<=this.getDataList().size())
+				{
+					break;
+				}
+				pos=0;
+			}while(this.next()!=null);
+			return results;
+		}
+	}
+	
+	public boolean updateOne(T key, Value value)
+	{
+		int pos = findNode(key);
+		if(this.getKeyList().get(pos).compareTo(key)!=0)
+		{
+			return false;
+		}
+		else
+		{
+			this.getDataList().set(pos, value);
+			return true;
+		}
+	}
+	
+	public boolean updateAll(T key,Value value)
+	{
+		int pos = findNode(key);
+		if(this.getKeyList().get(pos).compareTo(key)!=0)
+			return false;
+		else
+		{
+			do
+			{
+				while(pos<this.getDataList().size()&&this.getKeyList().get(pos).compareTo(key)==0)
+				{
+					this.getDataList().set(pos,value);
+					pos++;
+				}
+				if(pos<=this.getDataList().size())
+				{
+					break;
+				}
+				pos=0;
+			}while(this.next()!=null);
+			return true;
+		}
+	}
+	public void visitAll()
+	{
+		for(T key:this.getKeyList())
+		{
+			System.out.print(key+"\t");
+		}
+		System.out.println();
+		if(this.nextNode!=null)
+		this.next().visitAll();
 	}
 	
 	/**
@@ -74,7 +231,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
+		/*// TODO Auto-generated method stub
 		Leaf<Integer> leaf = new Leaf<Integer>();
 		// ResultSet rs = new ResultSet();
 		Scanner sc = new Scanner(System.in);
@@ -83,7 +240,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 			Integer key = sc.nextInt();
 			leaf.insertNode(key);
 			
-		}
+		}*/
 	}
 	
 	
