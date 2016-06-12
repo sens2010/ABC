@@ -86,6 +86,10 @@ public class BPlusTree<T extends Comparable<T>> {
 	{
 		this.getRoot().visitAll();
 	}
+	public void visitAllWithValue()
+	{
+		this.getRoot().visitAllWithValue();
+	}
 	/**
 	 * @param args
 	 */

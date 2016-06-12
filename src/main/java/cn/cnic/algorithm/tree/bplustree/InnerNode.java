@@ -39,7 +39,8 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 			{
 				this.getKeyList().add(pos, newnode.getAcientKey());
 				this.getIndexList().add(pos + 1, newnode);
-			} else
+			} 
+			else
 			{
 				this.getKeyList().add(newnode.getAcientKey());
 				this.getIndexList().add(newnode);
@@ -48,7 +49,8 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 		if (this.getKeyList().size() <= Node.getNodeSize())
 		{
 			return null;
-		} else
+		} 
+		else
 		{
 			List<T> keys = this.getKeyList();
 			List<Node<T>> indexes = this.getIndexList();
@@ -65,7 +67,6 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 			{
 				inner.getIndexList().add(si);
 			}
-			
 			
 			inner.setAcientKey(keys.get((keys.size() + 1) / 2));
 			keys.subList((keys.size() + 1) / 2,
@@ -190,10 +191,11 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 			}
 			right.getKeyList().subList(0, number).clear();
 			((InnerNode<T>)right).getIndexList().subList(0, number).clear();
-			return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+			return right.getKeyList().size()>0?right.getKeyList().get(0):null;
 		}
 		else if(number<0)
 		{
+			number*=-1;
 			for(int i=0;i<number;i++)
 			{
 				right.getKeyList().add(this.getKeyList().get(i));
@@ -207,7 +209,6 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 		{
 			return null;
 		}
-		
 	}
 	
 
@@ -215,6 +216,10 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 	public void visitAll()
 	{
 		this.getIndexList().get(0).visitAll();
+	}
+	public void visitAllWithValue()
+	{
+		this.getIndexList().get(0).visitAllWithValue();
 	}
 	
 }

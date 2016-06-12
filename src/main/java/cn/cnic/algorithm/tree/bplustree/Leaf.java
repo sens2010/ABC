@@ -1,7 +1,6 @@
 package cn.cnic.algorithm.tree.bplustree;
 
 import java.util.List;
-
 import com.google.common.collect.Lists;
 
 public class Leaf<T extends Comparable<T>> extends Node<T>
@@ -124,7 +123,21 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 			}
 			right.getKeyList().subList(0, number).clear();
 			((Leaf<T>)right).getDataList().subList(0, number).clear();
-			return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+			System.out.println("***************");
+			for(T t : this.getKeyList())
+			{
+				System.out.print(t+"\t");
+			}
+			System.out.println();
+			System.out.println("***************");
+			for(T t : right.getKeyList())
+			{
+				System.out.print(t+"\t");
+			}
+			System.out.println();
+			System.out.println("size:"+right.getKeyList().size());
+			System.out.println("***************");
+			return right.getKeyList().size()>0?right.getKeyList().get(0):null;
 		}
 		else if(number<0)
 		{
@@ -157,7 +170,9 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	{
 		int pos = findNode(key);
 		if(this.getKeyList().get(pos).compareTo(key)!=0)
+		{
 			return null;
+		}
 		else
 		{
 			List<Value> results = Lists.newLinkedList();
@@ -226,21 +241,36 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 		this.next().visitAll();
 	}
 	
+	public void visitAllWithValue()
+	{
+		List<T> list = this.getKeyList();
+		for(int i=0;i<list.size();i++)
+		{
+			String value ="";
+			try
+			{
+				value=this.getDataList().get(i).getText();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			System.out.print(list.get(i)+":"+value+"\t");
+		}
+		/*for(T key:this.getKeyList())
+		{
+			System.out.print(key+":"+this);
+		}*/
+		System.out.println();
+		if(this.nextNode!=null)
+		this.next().visitAllWithValue();
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		/*// TODO Auto-generated method stub
-		Leaf<Integer> leaf = new Leaf<Integer>();
-		// ResultSet rs = new ResultSet();
-		Scanner sc = new Scanner(System.in);
-		while (true)
-		{
-			Integer key = sc.nextInt();
-			leaf.insertNode(key);
-			
-		}*/
 	}
 	
 	

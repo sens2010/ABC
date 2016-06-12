@@ -153,6 +153,7 @@ public abstract class Node<T extends Comparable<T>>
 	}
 	
 	public abstract void visitAll();
+	public abstract void visitAllWithValue();
 	
 	
 	public abstract Node<T> removeNode(T key);
@@ -172,6 +173,7 @@ public abstract class Node<T extends Comparable<T>>
 	{
 		List<T> keylist = this.getKeyList();
 		int i = 0;
+		System.out.println(keylist.size());
 		while (i<keylist.size()&&keylist.get(i).compareTo(key) < 0)
 		{
 			i++;
