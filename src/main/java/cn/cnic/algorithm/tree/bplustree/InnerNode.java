@@ -52,13 +52,14 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 		} 
 		else
 		{
+			System.err.println("*************");
 			List<T> keys = this.getKeyList();
 			List<Node<T>> indexes = this.getIndexList();
 			
 			InnerNode<T> inner = new InnerNode<T>();
 			
-			List<T> subkeys = keys.subList((keys.size() + 1) / 2 + 1,keys.size());
-			List<Node<T>> subindexes = indexes.subList((keys.size() + 1) / 2 + 1,indexes.size());
+			List<T> subkeys = keys.subList((keys.size() + 1) / 2,keys.size());
+			List<Node<T>> subindexes = indexes.subList((keys.size() + 1) / 2,indexes.size());
 			for(T k:subkeys)
 			{
 				inner.getKeyList().add(k);
@@ -68,10 +69,10 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 				inner.getIndexList().add(si);
 			}
 			
-			inner.setAcientKey(keys.get((keys.size() + 1) / 2));
-			keys.subList((keys.size() + 1) / 2,
+			inner.setAcientKey(keys.get((keys.size() + 1) / 2-1));
+			keys.subList((keys.size() + 1) / 2-1,
 					keys.size()).clear();
-			indexes.subList((keys.size() + 1) / 2 + 1,
+			indexes.subList((keys.size() + 1) / 2,
 					keys.size()).clear();
 			
 			return inner;
@@ -106,7 +107,7 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 					{
 						newnode.borrowNode(right, right.getKeyList().size());
 						this.getKeyList().remove(0);
-						this.getKeyList().remove(1);
+						this.getIndexList().remove(1);
 					}
 				}
 				else if(pos<=(this.getKeyList().size()-1))
@@ -127,7 +128,7 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 					{
 						newnode.borrowNode(right, right.getKeyList().size());
 						this.getKeyList().remove(pos);
-						this.getKeyList().remove(pos+1);
+						this.getIndexList().remove(pos+1);
 					}
 				}
 				else
@@ -142,7 +143,7 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 					{
 						left.borrowNode(newnode, newnode.getKeyList().size());
 						this.getKeyList().remove(pos);
-						this.getKeyList().remove(pos+1);
+						this.getIndexList().remove(pos+1);
 					}
 				}
 				if(this.getKeyList().size()>Node.getNodeBottom())

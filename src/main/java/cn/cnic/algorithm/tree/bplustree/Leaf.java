@@ -87,6 +87,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	public Node<T> removeNode(T key)
 	{
 		int index = search(key);
+		System.err.println("index:"+index);
 		if(index==-1)
 		{
 			return new Leaf<T>();
@@ -141,13 +142,15 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 		}
 		else if(number<0)
 		{
+			int lsize = this.getKeyList().size();
+			number*=-1;
 			for(int i=0;i<number;i++)
 			{
-				right.getKeyList().add(this.getKeyList().get(i));
-				((Leaf<T>)right).getDataList().add(((Leaf<T>)this).getDataList().get(i));
+				right.getKeyList().add(0,this.getKeyList().get(lsize-i-1));
+				((Leaf<T>)right).getDataList().add(0,((Leaf<T>)this).getDataList().get(lsize-i-1));
 			}
-			this.getKeyList().subList(0, number).clear();
-			((Leaf<T>)this).getDataList().subList(0, number).clear();
+			this.getKeyList().subList(lsize-number, lsize).clear();
+			((Leaf<T>)this).getDataList().subList(lsize-number, lsize).clear();
 			 return right.getKeyList().size()>0?null:right.getKeyList().get(0);
 		}
 		else
@@ -160,7 +163,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	public Value findOne(T key)
 	{
 		int pos = findNode(key);
-		if(this.getKeyList().get(pos).compareTo(key)!=0)
+		if(this.getKeyList().size()==0||this.getKeyList().get(pos).compareTo(key)!=0)
 			return null;
 		else
 			return this.getDataList().get(pos);
@@ -249,7 +252,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 			String value ="";
 			try
 			{
-				value=this.getDataList().get(i).getText();
+				value=this.getDataList().get(i).getText().toString();
 			}
 			catch(Exception e)
 			{

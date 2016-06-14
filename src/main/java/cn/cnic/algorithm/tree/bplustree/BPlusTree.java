@@ -31,11 +31,21 @@ public class BPlusTree<T extends Comparable<T>> {
 		Node<T> newnode= root.addNode(key, value);
 		if(newnode!=null)
 		{
+			System.err.println("newroot!");
 			InnerNode<T> temp = new InnerNode<T>();
 			temp.getKeyList().add(newnode.getAcientKey());
 			temp.getIndexList().add(root);
 			temp.getIndexList().add(newnode);
-			root = temp;		
+			root = temp;
+			for(T t:root.getKeyList())
+			System.err.print(t);
+			System.err.println();
+			for(T t:((InnerNode<T>)root).getIndexList().get(0).getKeyList())
+				System.err.print(t+"\t");
+				System.err.println();
+				for(T t:((InnerNode<T>)root).getIndexList().get(1).getKeyList())
+					System.err.print(t+"\t");
+					System.err.println();
 		}
 	}
 	

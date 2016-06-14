@@ -1,12 +1,13 @@
 import org.junit.Test;
 
 import cn.cnic.algorithm.tree.bplustree.BPlusTree;
+import cn.cnic.algorithm.tree.bplustree.InnerNode;
+import cn.cnic.algorithm.tree.bplustree.Node;
 import cn.cnic.algorithm.tree.bplustree.Value;
 
 
 public class TestTree {
   
-	
 	public void testAddTree()
 	{
 		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
@@ -19,6 +20,29 @@ public class TestTree {
 		bpt.addNode(3,null);
 		System.out.println("耗时："+(System.currentTimeMillis()-start));
 		bpt.visitAll();
+		
+		System.out.println("*********split line**********");
+		InnerNode<Integer> in = (InnerNode<Integer>)(bpt.getRoot());
+		for(Integer i: in.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		System.err.println();
+		System.err.println(in.findNode(35));
+		System.err.println(in.findNode(37));
+		System.out.println("*********split line**********");
+		Node<Integer> node  = ((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(0);
+		for(Integer i: node.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		System.out.println();
+		node  = ((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(1);
+		for(Integer i: node.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(1);
 	}
 	
 	public void testAddTreeWithValue()
@@ -56,7 +80,7 @@ public class TestTree {
 		bpt.visitAll();
 	}
 	
-	
+	@Test
 	public void testDelete()
 	{
 		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
@@ -66,18 +90,60 @@ public class TestTree {
 		{
 			bpt.addNode(i,null);
 		}
-		bpt.removeNode(3);
-		bpt.visitAll();
-		System.out.println("******************************");
+		/*bpt.removeNode(3);
+		bpt.visitAll();*/
+		/*System.out.println("******************************");
 		bpt.removeNode(4);
 		bpt.visitAll();
 		System.out.println("******************************");
 		bpt.removeNode(41);
-		bpt.visitAll();
+		bpt.visitAll();*/
 		System.out.println("耗时："+(System.currentTimeMillis()-start));
+		System.err.println("*********split line**********");
+		InnerNode<Integer> in = (InnerNode<Integer>)(bpt.getRoot());
+		for(Integer i: in.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		System.err.println();
+		System.err.println("*********split line**********");
+		Node<Integer> node  = ((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(0);
+		for(Integer i: node.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		System.err.println();
+		node  = ((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(1);
+		for(Integer i: node.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		try
+		{
+			Thread.sleep(1000);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bpt.removeNode(3);
+		bpt.visitAll();
+		((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(1);
+		
+		try
+		{
+			Thread.sleep(1000);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("******************************");
+		bpt.removeNode(17);
+		bpt.visitAll();
+		((InnerNode<Integer>)(bpt.getRoot())).getIndexList().get(1);
 	}
 	
-	@Test 
 	public void testDeleteWithValue()
 	{
 		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
@@ -90,15 +156,50 @@ public class TestTree {
 		bpt.removeNode(3);
 		bpt.visitAllWithValue();
 		System.out.println("******************************");
-		bpt.removeNode(4);
+		bpt.removeNode(41);
 		bpt.visitAllWithValue();
 		System.out.println("******************************");
-		bpt.removeNode(41);
+		bpt.removeNode(99);
+		bpt.visitAllWithValue();
+		System.out.println("耗时："+(System.currentTimeMillis()-start));
+		
+		InnerNode<Integer> in = (InnerNode<Integer>)(bpt.getRoot());
+		for(Integer i: in.getKeyList())
+		{
+			System.err.print(i+"\t");
+		}
+		System.err.println();
+		System.err.println(in.findNode(99));
+		
+		
+	}
+	
+	public void testDeleteWithValueWithRoot()
+	{
+		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
+		
+		long start = System.currentTimeMillis();
+		for(int i=0;i<11;i++)
+		{
+			bpt.addNode(i,new Value(i+""));
+		}
+		bpt.visitAllWithValue();
+		bpt.removeNode(10);
 		bpt.visitAllWithValue();
 		System.out.println("耗时："+(System.currentTimeMillis()-start));
 	}
 	
 	
+	public void testFindTree()
+	{
+		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
+		long start = System.currentTimeMillis();
+		for(int i=0;i<100;i++)
+		{
+			bpt.addNode(i,new Value(i+1));
+		}	
+		System.err.println(bpt.find(99).getText());
+	}
 	
 	/**
 	 * @param args

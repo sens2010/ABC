@@ -3,22 +3,22 @@ package cn.cnic.algorithm.tree.bplustree;
 
 public class Value {
 
-	private String text;
+	private Object text;
 	public  Value()
 	{
 	}
 	
-	public Value(String text)
+	public Value(Object text)
 	{
 		this.text=text;
 	}
 	
-	public String getText()
+	public Object getText()
 	{
-		return this.text;
+		return this.text==null?"":this.text;
 	}
 	
-	public void setText(String text)
+	public void setText(Object text)
 	{
 		this.text = text;
 	}
