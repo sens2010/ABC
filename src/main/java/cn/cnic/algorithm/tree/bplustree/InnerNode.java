@@ -52,8 +52,8 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 		} 
 		else
 		{
-			System.err.println("*************");
-			System.out.println("size:"+this.getKeyList()+",condition:"+(this.getKeyList().size() <= Node.getNodeSize()));
+			//System.err.println("*************");
+			//System.out.println("size:"+this.getKeyList()+",condition:"+(this.getKeyList().size() <= Node.getNodeSize()));
 			List<T> keys = this.getKeyList();
 			List<Node<T>> indexes = this.getIndexList();
 			
@@ -75,7 +75,7 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 					keys.size()).clear();
 			indexes.subList((indexes.size() + 1) / 2,
 					indexes.size()).clear();
-			System.err.println("indexes size:"+indexes.size());
+			//System.err.println("indexes size:"+indexes.size());
 			return inner;
 		}
 	}
@@ -142,7 +142,7 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 				{
 					Node<T> right = this.getIndexList().get(pos+1);
 					T keyflag = this.getKeyList().get(pos);
-					System.out.println("right_size:"+right.getKeyList().size()+",compare:"+(Node.getNodeBottom()+Node.getBorrowCount()));
+					//System.out.println("right_size:"+right.getKeyList().size()+",compare:"+(Node.getNodeBottom()+Node.getBorrowCount()));
 					if(right.getKeyList().size()>=(Node.getNodeBottom()+Node.getBorrowCount()))
 					{
 						T flag = newnode.borrowNode(right, Node.getBorrowCount(),keyflag);
@@ -198,12 +198,12 @@ public class InnerNode<T extends Comparable<T>> extends Node<T>
 					}
 				}
 				
-				System.out.println("inner:size:"+this.getKeyList().size());
-				for(T t:this.getKeyList())
+				//System.out.println("inner:size:"+this.getKeyList().size());
+				/*for(T t:this.getKeyList())
 				{
 					System.out.print(t+"\t");
-				}
-				System.out.println();
+				}*/
+				//System.out.println();
 				if(this.getKeyList().size()>=Node.getNodeBottom())
 				{
 					return null;

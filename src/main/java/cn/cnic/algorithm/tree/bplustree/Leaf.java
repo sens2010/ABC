@@ -168,10 +168,32 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	public Value findOne(T key)
 	{
 		int pos = findNode(key);
-		if(this.getKeyList().size()==0||this.getKeyList().get(pos).compareTo(key)!=0)
+		if(pos>0)pos-=1;
+		if(this.getKeyList().size()==0)
+		{	
 			return null;
-		else
+		}
+		else if(this.getKeyList().get(pos).compareTo(key)==0)
+		{
 			return this.getDataList().get(pos);
+		}
+		else
+		{
+			 if(this.getKeyList().size()<=pos)
+			 {
+				 return null;
+			 }
+			 else if(pos>0&&this.getKeyList().get(pos-1).compareTo(key)==0)
+			 {
+				 return this.getDataList().get(pos);
+			 }
+			 else
+			 {
+				 return null;
+			 }
+		}
+			
+			
 	}
 	
 	public List<Value> findAll(T key)
@@ -203,16 +225,35 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	
 	public boolean updateOne(T key, Value value)
 	{
+		
 		int pos = findNode(key);
-		if(this.getKeyList().get(pos).compareTo(key)!=0)
-		{
+		if(pos>0)pos-=1;
+		if(this.getKeyList().size()==0)
+		{	
 			return false;
 		}
-		else
+		else if(this.getKeyList().get(pos).compareTo(key)==0)
 		{
 			this.getDataList().set(pos, value);
 			return true;
 		}
+		else
+		{
+			 if(this.getKeyList().size()<=pos)
+			 {
+				 return false;
+			 }
+			 else if(pos>0&&this.getKeyList().get(pos-1).compareTo(key)==0)
+			 {
+				 this.getDataList().set(pos, value);
+				return true;
+			 }
+			 else
+			 {
+				 return false;
+			 }
+		}
+		
 	}
 	
 	public boolean updateAll(T key,Value value)

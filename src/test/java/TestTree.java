@@ -210,7 +210,7 @@ public class TestTree {
 		
 	}
 	
-	@Test
+
 	public void testDeleteWithDegress()
 	{
 		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
@@ -361,7 +361,7 @@ public class TestTree {
 		
 	}
 	
-	
+	//@Test
 	public void testFindTree()
 	{
 		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
@@ -369,7 +369,53 @@ public class TestTree {
 		{
 			bpt.addNode(i,new Value(i+1));
 		}	
-		System.err.println(bpt.find(99).getText());
+		bpt.visitByBFV();
+		System.out.println(bpt.find(0).getText());
+		System.out.println(bpt.find(5).getText());
+		System.out.println(bpt.find(6).getText());
+		System.out.println(bpt.find(29).getText());
+		System.out.println(bpt.find(30).getText());
+		System.out.println(bpt.find(36).getText());
+		System.out.println(bpt.find(90).getText());
+		System.out.println(bpt.find(99).getText());
+	}
+	
+	@Test
+	public void testUpdateTree()
+	{
+		BPlusTree<Integer> bpt = new BPlusTree<Integer>();
+		for(int i=0;i<100;i++)
+		{
+			bpt.addNode(i,new Value(i+1));
+		}	
+		bpt.visitByBFV();
+		System.out.println(bpt.find(0).getText());
+		System.out.println(bpt.find(5).getText());
+		System.out.println(bpt.find(6).getText());
+		System.out.println(bpt.find(29).getText());
+		System.out.println(bpt.find(30).getText());
+		System.out.println(bpt.find(36).getText());
+		System.out.println(bpt.find(90).getText());
+		System.out.println(bpt.find(99).getText());
+		
+		System.out.println(bpt.update(0,new Value("2")));
+		System.out.println(bpt.update(5,new Value("7")));
+		System.out.println(bpt.update(6,new Value("8")));
+		System.out.println(bpt.update(29,new Value("31")));
+		System.out.println(bpt.update(30,new Value("30")));
+		System.out.println(bpt.update(36,new Value("37")));
+		System.out.println(bpt.update(90,new Value("90")));
+		System.out.println(bpt.update(99,new Value("99")));
+		
+		
+		System.out.println(bpt.find(0).getText());
+		System.out.println(bpt.find(5).getText());
+		System.out.println(bpt.find(6).getText());
+		System.out.println(bpt.find(29).getText());
+		System.out.println(bpt.find(30).getText());
+		System.out.println(bpt.find(36).getText());
+		System.out.println(bpt.find(90).getText());
+		System.out.println(bpt.find(99).getText());
 	}
 	
 	/**

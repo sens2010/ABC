@@ -133,12 +133,12 @@ public abstract class Node<T extends Comparable<T>>
 	
 	public int search(int start, int end, T key)
 	{
-		System.out.println("start:"+start+", end:"+end+", key:"+key);
-		for(T k : this.getKeyList())
+		//System.out.println("start:"+start+", end:"+end+", key:"+key);
+		/*for(T k : this.getKeyList())
 		{
 			System.out.print(k.toString()+"\t");
-		}
-		System.out.println();
+		}*/
+		//System.out.println();
 		int mid = (start + end + 1) / 2;
 		if (start >= end|| this.getKeyList().get(mid).compareTo(key) == 0)
 		{
@@ -180,11 +180,11 @@ public abstract class Node<T extends Comparable<T>>
 	{
 		List<T> keylist = this.getKeyList();
 		int i = 0;
-		System.err.println("size:"+keylist.size());
+		//System.err.println("size:"+keylist.size());
 		
 		while (i<keylist.size()&&keylist.get(i).compareTo(key) <= 0)
 		{
-			System.err.println(keylist.get(i));
+			//System.err.println(keylist.get(i));
 			i++;
 		}
 		return i;
