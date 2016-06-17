@@ -67,7 +67,7 @@ public abstract class Node<T extends Comparable<T>>
 	//left node will borrow or lend some node the right. 
 	//if number >0 is lend, left<-right;
 	//otherwise, left->right, and the number will match the count
-	public abstract T borrowNode(Node<T> right, int number);
+	public abstract T borrowNode(Node<T> right, int number, T key);
 	
 	
 	
@@ -140,12 +140,13 @@ public abstract class Node<T extends Comparable<T>>
 		}
 		System.out.println();
 		int mid = (start + end + 1) / 2;
-		if (this.getKeyList().get(mid).compareTo(key) == 0 || start >= end)
+		if (start >= end|| this.getKeyList().get(mid).compareTo(key) == 0)
 		{
-			if (this.getKeyList().get(mid).compareTo(key) != 0)
+			if (start >end||(start == end && this.getKeyList().get(mid).compareTo(key) != 0))
 			{
 				return -1;
-			} else
+			} 
+			else
 			{
 				return mid;
 			}
@@ -179,14 +180,18 @@ public abstract class Node<T extends Comparable<T>>
 	{
 		List<T> keylist = this.getKeyList();
 		int i = 0;
-		//System.out.println(keylist.size());
-		while (i<keylist.size()&&keylist.get(i).compareTo(key) < 0)
+		System.err.println("size:"+keylist.size());
+		
+		while (i<keylist.size()&&keylist.get(i).compareTo(key) <= 0)
 		{
+			System.err.println(keylist.get(i));
 			i++;
 		}
 		return i;
 		
 	}
+	
+	abstract public void visitByBFV();
 	/**
 	 * @param args
 	 */

@@ -42,6 +42,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 	
 	Node<T> addNode(T key, Value value)
 	{
+		if(value==null)value=new Value("");
 		int index = insertNode(key);
 		if (index < 0 || index == this.getKeyList().size())
 		{
@@ -96,7 +97,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 		{
 			this.getKeyList().remove(index);
 			this.getDataList().remove(index);
-			if(this.getKeyList().size()>Node.getNodeBottom())
+			if(this.getKeyList().size()>=Node.getNodeBottom())
 			{
 				return null;
 			}
@@ -112,7 +113,11 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 		return search(0,this.getKeyList().size()-1,key);
 	}
 	
-
+	public T borrowNode(Node<T> right, int number, T key)
+	{
+		return this.borrowNode(right, number);
+	}
+	
 	public T borrowNode(Node<T> right, int number)
 	{
 		if(number>0)
@@ -151,7 +156,7 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 			}
 			this.getKeyList().subList(lsize-number, lsize).clear();
 			((Leaf<T>)this).getDataList().subList(lsize-number, lsize).clear();
-			 return right.getKeyList().size()>0?null:right.getKeyList().get(0);
+			 return right.getKeyList().size()>0?right.getKeyList().get(0):null;
 		}
 		else
 		{
@@ -268,6 +273,16 @@ public class Leaf<T extends Comparable<T>> extends Node<T>
 		if(this.nextNode!=null)
 		this.next().visitAllWithValue();
 	}
+	
+	public void visitByBFV()
+	{
+		for(T t:this.getKeyList())
+		{
+			System.out.print(t+"\t");
+		}
+		System.out.println();
+	}
+	
 	
 	/**
 	 * @param args

@@ -23,7 +23,7 @@ public class BPlusTree<T extends Comparable<T>> {
 	
 	public void addNode(T key)
 	{
-		root.addNode(key,null);
+		root.addNode(key,new Value(""));
 	}
 	
 	public void addNode(T key, Value value)
@@ -58,17 +58,20 @@ public class BPlusTree<T extends Comparable<T>> {
 		}
 		else if(newnode.getKeyList().size()==0)
 		{
-			return false;
+			if(newnode instanceof InnerNode&&((InnerNode<T>)newnode).getIndexList().size()==1)
+			{
+				this.visitByBFV();
+				root = ((InnerNode<T>)newnode).getIndexList().get(0);
+				this.visitByBFV();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			if(newnode instanceof InnerNode&& newnode.getKeyList().size()==1)
-			{
-				Node<T> left = ((InnerNode<T>)newnode).getIndexList().get(0);
-				Node<T> right = ((InnerNode<T>)newnode).getIndexList().get(1);
-				left.borrowNode(right, right.getKeyList().size());
-				root = left;
-			}
 			return true;
 		}
 	}
@@ -99,6 +102,11 @@ public class BPlusTree<T extends Comparable<T>> {
 	public void visitAllWithValue()
 	{
 		this.getRoot().visitAllWithValue();
+	}
+	
+	public void visitByBFV()
+	{
+		this.getRoot().visitByBFV();
 	}
 	/**
 	 * @param args
